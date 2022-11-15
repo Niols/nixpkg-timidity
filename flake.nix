@@ -8,6 +8,7 @@
       {
         packages.default = pkgs.callPackage ./timidity {
           inherit (pkgs.darwin.apple_sdk.frameworks) CoreAudio;
+          enableVorbis = true;
         };
       }
     );
