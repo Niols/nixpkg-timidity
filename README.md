@@ -98,3 +98,12 @@ Playing time: ~37 seconds
 Notes cut: 0
 Notes lost totally: 0
 ```
+
+Fun fact: The difference also shows up in the help where an additional line specifies that Ogg Vorbis is an available output mode.
+For instance:
+
+```console
+$ diff <(nix run .#timidityFromNixpkgs -- --help) <(nix run .#timidityWithVorbis -- --help)
+243a244
+>   -Ov          Ogg Vorbis
+```
