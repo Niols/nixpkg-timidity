@@ -6,7 +6,8 @@
 
       let pkgs = nixpkgs.legacyPackages.${system}; in
       {
-        packages.default = pkgs.callPackage ./timidity {
+        packages.default = self.packages.${system}.timidity;
+        packages.timidity = pkgs.callPackage ./timidity {
           inherit (pkgs.darwin.apple_sdk.frameworks) CoreAudio;
           enableVorbis = true;
         };
