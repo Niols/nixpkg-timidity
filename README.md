@@ -18,10 +18,21 @@ There is already [a Nix package for TiMidity++ in nixpkgs][timidity-in-nixpkgs],
 Building & Running
 ------------------
 
-Because of the wrapping in a Nix Flake, building should be trivial, although it might take some time. The `timidity` binary ends up in the directory `result/bin`.
+The Nix Flake provides multiple targets to build `timidity`:
+
+- `timidityFromNixpkgs` provides TiMidity++ as-is from nixpkgs.
+  This is also the default target.
+
+- `timidityFromNixpkgs'` does just the same, except the call to `callPackage` is inlined in the flake.
+
+- `timidityWithVorbis` also goes through `callPackage` but with an additional `enableVorbis = true` argument.
+  It provide a variant of TiMidity++ compiled with support for OGG Vorbis.
+
+Building is trivial with Nix.
+The `timidity` binary ends up in the directory `result/bin`.
 
 ```console
-$ nix build
+$ nix build .#<target>
 $ result/bin/timidity --version
 TiMidity++ version 2.15.0
 [...]
@@ -30,7 +41,7 @@ TiMidity++ version 2.15.0
 Alternatively, one can run `timidity` directly with:
 
 ``` console
-$ nix run . -- --version
+$ nix run .#<target> -- --version
 TiMidity++ version 2.15.0
 [...]
 ```
@@ -38,7 +49,7 @@ TiMidity++ version 2.15.0
 A last option is to run the flake immediately from the GitHub repository, with:
 
 ``` console
-$ nix run github:niols/nixpkg-timidity -- --version
+$ nix run github:niols/nixpkg-timidity#<target> -- --version
 TiMidity++ version 2.15.0
 [...]
 ```
@@ -49,7 +60,7 @@ Testing
 Once built, you can try to compile a test MIDI file to WAV and see if things work correctly.
 
 ```console
-$ result/bin/timidity -Ow test/the-ashgrove.midi
+$ nix run .#timidityFromNixpkgs -- -Ow test/the-ashgrove.midi
 Playing test/the-ashgrove.midi
 MIDI file: test/the-ashgrove.midi
 Format: 1  Tracks: 3  Divisions: 384
@@ -66,7 +77,24 @@ Notes lost totally: 0
 You can then try again, but to compile to OGG this time. At this point, it should fail.
 
 ```console
-$ result/bin/timidity -Ov test/the-ashgrove.midi
+$ nix run .#timidityFromNixpkgs -- -Ov test/the-ashgrove.midi
 Playmode `v' is not compiled in.
 Try timidity -h for help
+```
+
+But if you try with the version supposed to support OGG Vorbis:
+
+```console
+$ nix run .#timidityWithVorbis -- -Ov test/the-ashgrove.midi
+Playing test/the-ashgrove.midi
+MIDI file: test/the-ashgrove.midi
+Format: 1  Tracks: 3  Divisions: 384
+Sequence:
+Text: creator:
+Text: GNU LilyPond 2.22.2
+Track name: \new:
+Output test/the-ashgrove.ogg
+Playing time: ~37 seconds
+Notes cut: 0
+Notes lost totally: 0
 ```
