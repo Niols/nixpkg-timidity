@@ -1,6 +1,9 @@
 Nix package for TiMidity++
 ==========================
 
+> [!NOTE]  
+> Now that https://github.com/NixOS/nixpkgs/pull/201828 has been merged, this repository stopped being useful. Use nixpkgs with an overlay and `timidity.override { enableVorbis = true; }`.
+
 This repository contains a Nix package for [TiMidity++][timidity-web-page].
 
 [timidity-web-page]: https://timidity.sourceforge.net/
